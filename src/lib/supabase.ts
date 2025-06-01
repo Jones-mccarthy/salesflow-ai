@@ -52,27 +52,10 @@ export const supabase = createClient<Database>(
   }
 );
 
-// Helper function to manually confirm a user's email
+// Helper function to manually confirm a user's email (no longer needed as we're auto-confirming)
 export const confirmUserEmail = async (email: string): Promise<boolean> => {
-  try {
-    // First try with the RPC function
-    const { error: rpcError } = await supabase.rpc('confirm_user', {
-      email_address: email
-    });
-    
-    if (!rpcError) {
-      return true;
-    }
-    
-    // If RPC fails, try direct SQL query (less secure but may work)
-    const { error: queryError } = await supabase.from('manual_operations')
-      .insert({ operation: 'confirm_email', email: email });
-      
-    return !queryError;
-  } catch (error) {
-    console.error('Error confirming user email:', error);
-    return false;
-  }
+  // Email confirmation is now disabled, so we just return true
+  return true;
 };
 
 // Log successful initialization

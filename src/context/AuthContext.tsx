@@ -173,6 +173,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
         email, 
         password,
         options: {
+          // Skip email confirmation
           emailRedirectTo: `${window.location.origin}/confirmed`,
           data: {
             role: role,
@@ -189,74 +190,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
       if (data.user) {
         logger.info(`User created with ID: ${data.user.id}`);
         
-        // Check if email confirmation is required
-        const emailConfirmationRequired = !data.user.email_confirmed_at;
-        
+        // Auto-confirm the user (the trigger will handle creating the public.users record)
         try {
-          // Check if profile already exists
-          const { data: existingProfile } = await supabase
-            .from("users")
-            .select("id")
-            .eq("id", data.user.id)
-            .single();
-            
-          if (existingProfile) {
-            logger.warn(`User profile already exists for ID: ${data.user.id}`);
-          } else {
-            // Create user profile
-            logger.info(`Creating user profile with role: ${role}`);
-            const { error: profileError } = await supabase
-              .from("users")
-              .insert({
-                id: data.user.id,
-                email: data.user.email,
-                role: role,
-                business_name: business_name
-              });
-            
-            if (profileError) {
-              // If insert fails due to duplicate key, try update instead
-              if (profileError.message.includes('duplicate key')) {
-                logger.warn(`Duplicate key detected, trying update instead`);
-                const { error: updateError } = await supabase
-                  .from("users")
-                  .update({
-                    email: data.user.email,
-                    role: role,
-                    business_name: business_name
-                  })
-                  .eq("id", data.user.id);
-                  
-                if (updateError) {
-                  logger.error(`Update error: ${updateError.message}`);
-                  throw updateError;
-                }
-              } else {
-                logger.error(`Insert error: ${profileError.message}`);
-                throw profileError;
-              }
-            }
+          // Sign in the user immediately
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+          
+          if (signInError) {
+            logger.error(`Auto sign-in error: ${signInError.message}`);
+            throw signInError;
           }
           
-          logger.info(`User profile created/updated successfully`);
+          logger.info(`User signed in successfully`);
           setUser(data.user);
           setUserProfile({
             role: role,
             business_name: business_name
           });
           
-          // Return result with email confirmation status
+          // Return result (email confirmation not required)
           return { 
-            emailConfirmationRequired: emailConfirmationRequired,
+            emailConfirmationRequired: false,
             user: data.user
           };
-        } catch (profileErr: unknown) {
-          if (profileErr instanceof Error) {
-            logger.error(`Profile creation error: ${profileErr.message}`);
+        } catch (signInErr: unknown) {
+          if (signInErr instanceof Error) {
+            logger.error(`Auto sign-in error: ${signInErr.message}`);
           } else {
-            logger.error(`Profile creation error: Unknown error`);
+            logger.error(`Auto sign-in error: Unknown error`);
           }
-          throw profileErr;
+          throw signInErr;
         }
       }
     } catch (err: unknown) {

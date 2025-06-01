@@ -3,16 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
-import { supabase, confirmUserEmail } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [contactNumber, setContactNumber] = useState('');
+  const [businessName, setBusinessName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,63 +27,21 @@ export default function SignupPage() {
       return;
     }
 
-    try {
-      // First check if user already exists
-      const { data: existingUsers } = await supabase.auth.admin.listUsers();
-      const userExists = existingUsers?.users?.some(user => user.email === email);
-      
-      if (userExists) {
-        setError('A user with this email already exists. Please try a different email.');
-        setIsLoading(false);
-        return;
-      }
+    // Validate business name
+    if (!businessName.trim()) {
+      setError('Business name is required');
+      setIsLoading(false);
+      return;
+    }
 
-      // Step 1: Create auth user
-      const { data, error: signUpError } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: {
-            contact_number: contactNumber
-          }
-        }
-      });
+    try {
+      // Use the signup function from AuthContext
+      const result = await signup(email, password, 'admin', businessName);
       
-      if (signUpError) throw signUpError;
-      if (!data.user) throw new Error('Failed to create user account');
-      
-      // Step 2: Try to confirm the user's email
-      await confirmUserEmail(email);
-      
-      // Step 3: Insert user record into public.users table
-      try {
-        const { error: insertError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: email,
-            contact_number: contactNumber,
-            role: 'admin',
-            business_name: 'My Business' // Default business name
-          });
-        
-        if (insertError) throw insertError;
-      } catch (insertErr) {
-        console.error('Error inserting user record:', insertErr);
-        // Continue anyway, as the auth user is created
+      if (result) {
+        // Success - redirect to dashboard
+        navigate('/admin/dashboard');
       }
-      
-      // Step 4: Sign in the user
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-      
-      if (signInError) throw signInError;
-      
-      // Success - redirect to dashboard
-      navigate('/admin/dashboard');
-      
     } catch (err: unknown) {
       console.error('Signup error:', err);
       if (err instanceof Error) {
@@ -129,12 +88,12 @@ export default function SignupPage() {
           />
 
           <Input
-            label="Contact Number"
-            type="tel"
-            value={contactNumber}
-            onChange={(e) => setContactNumber(e.target.value)}
+            label="Business Name"
+            type="text"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
             required
-            placeholder="+233 XX XXX XXXX"
+            placeholder="Your Business Name"
           />
 
           <Input

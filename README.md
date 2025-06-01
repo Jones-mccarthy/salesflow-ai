@@ -1,73 +1,73 @@
 # SalesFlow AI
 
-A SaaS application for shop owners to manage sales, inventory, debts, and insights.
+A SaaS web application for managing sales, inventory, staff roles, and business insights.
 
-## Supabase Setup
+## Tech Stack
 
-This project uses Supabase for the backend database and authentication. Follow these steps to set up your Supabase project:
+- **Frontend**: React + Vite
+- **Backend**: Supabase (Auth + Database)
+- **Payment**: Stripe (future implementation)
+- **Hosting**: Vercel
+- **UI**: Custom dark theme with glassmorphism
 
-1. Create a new project on [Supabase](https://supabase.com)
+## Features
 
-2. Run the SQL script in `supabase/schema.sql` in the Supabase SQL editor to create the database schema
-
-3. Copy your Supabase URL and anon key from the project settings
-
-4. Create a `.env` file in the root directory based on `.env.example` and add your Supabase credentials:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-5. Restart your development server
+- Role-based authentication (admin & staff)
+- Admin invites staff via email (staff can't self-register)
+- Email confirmation is disabled (users are auto-confirmed)
+- Business management
+- Inventory tracking
+- Sales recording
+- Voice input feature
 
 ## Database Schema
 
 The application uses the following tables:
 
-### users
-- id (UUID, PK)
-- email (text, unique)
-- password (hashed, optional if using Supabase Auth)
-- role (enum: 'admin' | 'staff')
-- created_at (timestamp)
+- `auth.users` - Managed by Supabase Auth
+- `public.users` - Synced from auth.users via trigger
+- `inventory` - For tracking products and stock
+- `sales` - For recording sales transactions
+- `debts` - For tracking debts
+- `subscriptions` - For managing subscription status
 
-### inventory
-- id (UUID, PK)
-- user_id (FK to users)
-- name (text)
-- quantity (integer)
-- unit_price (float)
-- created_at (timestamp)
+## Setup Instructions
 
-### sales
-- id (UUID, PK)
-- inventory_id (FK to inventory)
-- quantity_sold (integer)
-- total_price (float)
-- sold_at (timestamp)
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Create a Supabase project and set up the database schema
+4. Apply the SQL migrations in the `supabase/migrations` folder
+5. Apply the SQL functions in the `supabase/functions` folder
+6. Set up environment variables in `.env` file
+7. Run the development server: `npm run dev`
 
-### debts
-- id (UUID, PK)
-- user_id (FK to users)
-- type (enum: 'owed_to_user' | 'owed_by_user')
-- name (text)
-- amount (float)
-- created_at (timestamp)
+## Environment Variables
 
-### subscriptions
-- id (UUID, PK)
-- user_id (FK to users)
-- status (enum: 'trial' | 'active' | 'expired')
-- start_date (timestamp)
-- end_date (timestamp)
-- created_at (timestamp)
+Create a `.env` file with the following variables:
+
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## Database Setup
+
+The database setup includes:
+
+1. Tables for users, inventory, sales, debts, and subscriptions
+2. Triggers to sync auth.users to public.users
+3. Triggers to auto-confirm new users
+4. Row-level security policies
+
+## Authentication Flow
+
+1. Admin signup: Creates an account with business name
+2. Admin is auto-confirmed (no email verification required)
+3. Admin can invite staff members
+4. Staff cannot self-register, they must be invited
 
 ## Development
 
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-```
+- Run development server: `npm run dev`
+- Build for production: `npm run build`
+- Preview production build: `npm run preview`
