@@ -21,17 +21,19 @@ export default function Header(): React.ReactElement {
   }, [location]);
 
   return (
-    <header className="glass-panel border-b border-gray-700/50 py-3 px-4 md:px-6 flex items-center">
-      <div className="flex items-center ml-8 md:ml-0">
-        {pageTitle && (
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-white/90 tracking-wide flex items-center">
-              {pageTitle}
-              {business_name && <span className="ml-2 md:ml-3 text-sm md:text-base text-cyan-400">| {business_name}</span>}
-            </h1>
-            <div className="h-1 w-20 bg-gradient-to-r from-indigo-500 to-blue-600 rounded mt-2"></div>
-          </div>
-        )}
+    <header className="glass-panel border-b border-gray-700/50 py-3 px-4 md:px-6">
+      <div className="flex items-center justify-center md:justify-start">
+        <div className="ml-6 md:ml-0">
+          {pageTitle && (
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-white/90 tracking-wide flex flex-col md:flex-row items-center md:items-baseline">
+                {pageTitle}
+                {business_name && <span className="mt-1 md:mt-0 md:ml-3 text-sm md:text-base text-cyan-400">| {business_name}</span>}
+              </h1>
+              <div className="h-1 w-20 bg-gradient-to-r from-indigo-500 to-blue-600 rounded mt-2 mx-auto md:mx-0"></div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

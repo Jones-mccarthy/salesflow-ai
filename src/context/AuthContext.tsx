@@ -19,7 +19,7 @@ interface AuthContextType {
   business_name: string | null;
   businessName: string | null; // Keep for backward compatibility
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, role: Role, business_name: string) => Promise<void>;
+  signup: (email: string, password: string, role: Role, business_name: string) => Promise<{ emailConfirmationRequired: boolean; user: User } | void>;
   logout: () => Promise<void>;
   loading: boolean;
   staffMembers: Array<Record<string, unknown>>;
@@ -189,6 +189,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
       if (data.user) {
         logger.info(`User created with ID: ${data.user.id}`);
         
+        // Check if email confirmation is required
+        const emailConfirmationRequired = !data.user.email_confirmed_at;
+        
         try {
           // Check if profile already exists
           const { data: existingProfile } = await supabase
@@ -241,6 +244,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
             role: role,
             business_name: business_name
           });
+          
+          // Return result with email confirmation status
+          return { 
+            emailConfirmationRequired: emailConfirmationRequired,
+            user: data.user
+          };
         } catch (profileErr: unknown) {
           if (profileErr instanceof Error) {
             logger.error(`Profile creation error: ${profileErr.message}`);

@@ -10,6 +10,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -17,11 +18,18 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setIsLoading(true);
 
     try {
-      await signup(email, password, 'admin', businessName);
-      navigate('/admin/dashboard');
+      const result = await signup(email, password, 'admin', businessName);
+      
+      // Check if email confirmation is required
+      if (result?.emailConfirmationRequired) {
+        setSuccess('Please confirm your email to activate your account. Check your inbox.');
+      } else {
+        navigate('/admin/dashboard');
+      }
     } catch (err: unknown) {
       console.error('Signup error:', err);
       if (err instanceof Error && err.message?.includes('duplicate key')) {
@@ -47,6 +55,12 @@ export default function SignupPage() {
         {error && (
           <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 text-red-400 rounded">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 p-3 bg-green-900/30 border border-green-500/50 text-green-400 rounded">
+            {success}
           </div>
         )}
 
@@ -81,7 +95,7 @@ export default function SignupPage() {
             <Button
               type="submit"
               className="w-full"
-              disabled={isLoading}
+              disabled={isLoading || !!success}
             >
               {isLoading ? 'Creating Account...' : 'Sign Up as Admin'}
             </Button>

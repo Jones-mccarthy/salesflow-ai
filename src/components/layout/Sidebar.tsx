@@ -27,10 +27,10 @@ export default function Sidebar(): React.ReactElement {
       {/* Mobile menu button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-gray-800/80 text-white"
         aria-label="Toggle menu"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
@@ -44,14 +44,14 @@ export default function Sidebar(): React.ReactElement {
       )}
       
       <aside className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64 glass-panel border-r border-gray-700/50 h-screen fixed md:sticky top-0 z-40 transition-transform duration-300 ease-in-out overflow-y-auto`}>
-        <div className="p-4 flex flex-col min-h-full">
+        <div className="p-4 flex flex-col h-full">
           <div className="flex items-center justify-center p-2 mb-6">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
               SalesFlow AI
             </h2>
           </div>
           
-          <nav className="space-y-1 mb-auto">
+          <nav className="space-y-1 flex-1">
             {filteredNavItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -96,8 +96,8 @@ export default function Sidebar(): React.ReactElement {
             >
               <span className="mr-3">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 01-1 1h12a1 1 0 001-1V7.414a1 1 0 00-.293-.707L11.414 2.414A1 1 0 0010.707 2H4a1 1 0 00-1 1v12zm9 1a1 1 0 00-1 1v6a1 1 0 002 0V5a1 1 0 00-1-1z" clipRule="evenodd" />
-                  <path d="M9 8a1 1 0 011-1h5a1 1 0 110 2h-5a1 1 0 01-1-1z" />
+                  <path d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V7.414a1 1 0 00-.293-.707L11.414 2.414A1 1 0 0010.707 2H4a1 1 0 00-1 1v12zm9 1a1 1 0 011 1v6a1 1 0 11-2 0V5a1 1 0 011-1z" />
+                  <path d="M11 8a1 1 0 00-1-1H6a1 1 0 100 2h4a1 1 0 001-1z" />
                 </svg>
               </span>
               <span>Logout</span>
