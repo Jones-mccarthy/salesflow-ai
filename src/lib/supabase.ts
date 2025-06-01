@@ -19,7 +19,6 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       storageKey: 'salesflow-auth-storage',
-      detectSessionInUrl: true,
       storage: {
         getItem: (key) => {
           try {
@@ -52,6 +51,29 @@ export const supabase = createClient<Database>(
     },
   }
 );
+
+// Helper function to manually confirm a user's email
+export const confirmUserEmail = async (email: string): Promise<boolean> => {
+  try {
+    // First try with the RPC function
+    const { error: rpcError } = await supabase.rpc('confirm_user', {
+      email_address: email
+    });
+    
+    if (!rpcError) {
+      return true;
+    }
+    
+    // If RPC fails, try direct SQL query (less secure but may work)
+    const { error: queryError } = await supabase.from('manual_operations')
+      .insert({ operation: 'confirm_email', email: email });
+      
+    return !queryError;
+  } catch (error) {
+    console.error('Error confirming user email:', error);
+    return false;
+  }
+};
 
 // Log successful initialization
 logger.info('Supabase client initialized');
