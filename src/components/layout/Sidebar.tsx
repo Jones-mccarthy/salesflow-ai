@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,6 +15,7 @@ const navItems = [
 export default function Sidebar(): React.ReactElement {
   const location = useLocation();
   const { role, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
   
   // Filter nav items based on user role
   const filteredNavItems = navItems.filter(item => 
@@ -22,67 +23,89 @@ export default function Sidebar(): React.ReactElement {
   );
 
   return (
-    <aside className="w-64 glass-panel border-r border-gray-700/50 h-screen sticky top-0">
-      <div className="p-4 flex flex-col h-full">
-        <div className="flex items-center justify-center p-2 mb-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-            SalesFlow AI
-          </h2>
-        </div>
-        
-        <nav className="space-y-1 flex-grow">
-          {filteredNavItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center px-4 py-3 rounded-md transition-colors ${
-                  isActive
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-800/70 hover:text-white'
-                }`}
-              >
-                <span className="mr-3">
-                  {getIcon(item.icon)}
-                </span>
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-        
-        <div className="mt-auto pt-4">
-          {/* User role badge */}
-          {role && (
-            <div className="mb-2 px-4 py-2">
-              <div className="flex items-center">
-                <div className="text-xs text-gray-400 mr-2">Logged in as:</div>
-                <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                  role === 'admin' ? 'bg-indigo-900/50 text-indigo-400' : 'bg-cyan-900/50 text-cyan-400'
-                }`}>
-                  {role.toUpperCase()}
-                </span>
-              </div>
-            </div>
-          )}
+    <>
+      {/* Mobile menu button */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
+        aria-label="Toggle menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
+      
+      <aside className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64 glass-panel border-r border-gray-700/50 h-screen fixed md:sticky top-0 z-40 transition-transform duration-300 ease-in-out`}>
+        <div className="p-4 flex flex-col h-full">
+          <div className="flex items-center justify-center p-2 mb-6">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              SalesFlow AI
+            </h2>
+          </div>
           
-          {/* Logout button */}
-          <button 
-            onClick={logout}
-            className="flex items-center px-4 py-3 rounded-md text-gray-300 hover:bg-red-900/30 hover:text-white transition-colors w-full"
-          >
-            <span className="mr-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 01-1 1h12a1 1 0 001-1V7.414a1 1 0 00-.293-.707L11.414 2.414A1 1 0 0010.707 2H4a1 1 0 00-1 1v12zm9 1a1 1 0 00-1 1v6a1 1 0 002 0V5a1 1 0 00-1-1z" clipRule="evenodd" />
-                <path d="M9 8a1 1 0 011-1h5a1 1 0 110 2h-5a1 1 0 01-1-1z" />
-              </svg>
-            </span>
-            <span>Logout</span>
-          </button>
+          <nav className="space-y-1 flex-grow">
+            {filteredNavItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center px-4 py-3 rounded-md transition-colors ${
+                    isActive
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-gray-300 hover:bg-gray-800/70 hover:text-white'
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <span className="mr-3">
+                    {getIcon(item.icon)}
+                  </span>
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+          
+          <div className="mt-auto pt-4">
+            {/* User role badge */}
+            {role && (
+              <div className="mb-2 px-4 py-2">
+                <div className="flex items-center">
+                  <div className="text-xs text-gray-400 mr-2">Logged in as:</div>
+                  <span className={`px-2 py-1 rounded-md text-xs font-medium ${
+                    role === 'admin' ? 'bg-indigo-900/50 text-indigo-400' : 'bg-cyan-900/50 text-cyan-400'
+                  }`}>
+                    {role.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            {/* Logout button */}
+            <button 
+              onClick={logout}
+              className="flex items-center px-4 py-3 rounded-md text-gray-300 hover:bg-red-900/30 hover:text-white transition-colors w-full"
+            >
+              <span className="mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 01-1 1h12a1 1 0 001-1V7.414a1 1 0 00-.293-.707L11.414 2.414A1 1 0 0010.707 2H4a1 1 0 00-1 1v12zm9 1a1 1 0 00-1 1v6a1 1 0 002 0V5a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <path d="M9 8a1 1 0 011-1h5a1 1 0 110 2h-5a1 1 0 01-1-1z" />
+                </svg>
+              </span>
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
 

@@ -18,6 +18,19 @@ export const supabase = createClient<Database>(
     auth: {
       persistSession: true,
       autoRefreshToken: true,
+      storageKey: 'salesflow-auth-storage',
+      storage: {
+        getItem: (key) => {
+          const storedSession = localStorage.getItem(key);
+          return storedSession;
+        },
+        setItem: (key, value) => {
+          localStorage.setItem(key, value);
+        },
+        removeItem: (key) => {
+          localStorage.removeItem(key);
+        }
+      }
     },
     // Log database queries in development
     db: {
