@@ -14,7 +14,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -60,9 +60,13 @@ export default function SignupPage() {
       // Success - redirect to dashboard
       navigate('/admin/dashboard');
       
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Signup error:', err);
-      setError(err.message || 'Failed to sign up');
+      if (err instanceof Error) {
+        setError(err.message || 'Failed to sign up');
+      } else {
+        setError('Failed to sign up');
+      }
     } finally {
       setIsLoading(false);
     }
