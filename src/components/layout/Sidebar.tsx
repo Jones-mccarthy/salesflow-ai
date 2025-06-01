@@ -43,15 +43,15 @@ export default function Sidebar(): React.ReactElement {
         ></div>
       )}
       
-      <aside className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64 glass-panel border-r border-gray-700/50 h-screen fixed md:sticky top-0 z-40 transition-transform duration-300 ease-in-out`}>
-        <div className="p-4 flex flex-col h-full">
+      <aside className={`${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 w-64 glass-panel border-r border-gray-700/50 h-screen fixed md:sticky top-0 z-40 transition-transform duration-300 ease-in-out overflow-y-auto`}>
+        <div className="p-4 flex flex-col min-h-full">
           <div className="flex items-center justify-center p-2 mb-6">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
               SalesFlow AI
             </h2>
           </div>
           
-          <nav className="space-y-1 flex-grow">
+          <nav className="space-y-1 mb-auto">
             {filteredNavItems.map((item) => {
               const isActive = location.pathname === item.path;
               return (
@@ -74,7 +74,7 @@ export default function Sidebar(): React.ReactElement {
             })}
           </nav>
           
-          <div className="mt-auto pt-4">
+          <div className="mt-4 pt-4 border-t border-gray-700/30">
             {/* User role badge */}
             {role && (
               <div className="mb-2 px-4 py-2">

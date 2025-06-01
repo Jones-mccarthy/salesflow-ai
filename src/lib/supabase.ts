@@ -19,16 +19,30 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       storageKey: 'salesflow-auth-storage',
+      detectSessionInUrl: true,
       storage: {
         getItem: (key) => {
-          const storedSession = localStorage.getItem(key);
-          return storedSession;
+          try {
+            const storedSession = localStorage.getItem(key);
+            return storedSession;
+          } catch (error) {
+            console.error('Error getting auth session from storage:', error);
+            return null;
+          }
         },
         setItem: (key, value) => {
-          localStorage.setItem(key, value);
+          try {
+            localStorage.setItem(key, value);
+          } catch (error) {
+            console.error('Error setting auth session to storage:', error);
+          }
         },
         removeItem: (key) => {
-          localStorage.removeItem(key);
+          try {
+            localStorage.removeItem(key);
+          } catch (error) {
+            console.error('Error removing auth session from storage:', error);
+          }
         }
       }
     },

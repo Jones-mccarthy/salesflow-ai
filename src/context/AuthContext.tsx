@@ -137,14 +137,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
+      logger.info(`Attempting login for user: ${email}`);
       const { error, data } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      
+      if (error) {
+        logger.error(`Login error: ${error.message}`);
+        throw error;
+      }
+      
       if (data.user) {
+        logger.info(`User logged in successfully: ${data.user.id}`);
         setUser(data.user);
         await fetchUserProfile(data.user.id);
+      } else {
+        logger.warn('Login successful but no user data returned');
       }
     } catch (err) {
-      console.error("Login error:", err);
+      if (err instanceof Error) {
+        logger.error(`Login error: ${err.message}`);
+      } else {
+        logger.error('Unknown login error');
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -156,7 +169,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
     try {
       // Create auth user
       logger.info(`Creating new auth user with email ${email}`);
-      const { error, data } = await supabase.auth.signUp({ email, password });
+      const { error, data } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: {
+            role: role,
+            business_name: business_name
+          }
+        }
+      });
       
       if (error) {
         logger.error(`Auth signup error: ${error.message}`);
