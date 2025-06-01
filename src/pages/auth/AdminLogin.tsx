@@ -21,7 +21,7 @@ export default function AdminLogin(): React.ReactElement {
     try {
       await login(email, password);
       navigate('/admin/dashboard');
-    } catch (err) {
+    } catch (error) {
       setError('Invalid email or password');
     } finally {
       setIsLoading(false);

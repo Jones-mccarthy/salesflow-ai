@@ -167,38 +167,38 @@ export default function StaffManagementPage() {
               </thead>
               <tbody className="divide-y divide-slate-700/50">
                 {staffMembers.map((staff) => (
-                  <tr key={staff.id}>
+                  <tr key={String(staff.id)}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-white">{staff.name}</div>
+                      <div className="text-sm font-medium text-white">{String(staff.name)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-slate-300">{staff.email}</div>
+                      <div className="text-sm text-slate-300">{String(staff.email)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-slate-300">{staff.role}</div>
+                      <div className="text-sm text-slate-300">{String(staff.role)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        staff.status === 'active' 
+                        String(staff.status) === 'active' 
                           ? 'bg-green-900/30 text-green-400' 
                           : 'bg-red-900/30 text-red-400'
                       }`}>
-                        {staff.status === 'active' ? 'Active' : 'Inactive'}
+                        {String(staff.status) === 'active' ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button 
-                        onClick={() => updateStaffStatus(staff.id, staff.status === 'active' ? 'inactive' : 'active')}
+                        onClick={() => updateStaffStatus(String(staff.id), String(staff.status) === 'active' ? 'inactive' : 'active')}
                         className={`mr-2 text-xs px-2 py-1 rounded ${
-                          staff.status === 'active'
+                          String(staff.status) === 'active'
                             ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
                             : 'bg-green-900/30 text-green-400 hover:bg-green-900/50'
                         }`}
                       >
-                        {staff.status === 'active' ? 'Deactivate' : 'Activate'}
+                        {String(staff.status) === 'active' ? 'Deactivate' : 'Activate'}
                       </button>
                       <button 
-                        onClick={() => setResetPasswordId(staff.id)}
+                        onClick={() => setResetPasswordId(String(staff.id))}
                         className="text-xs px-2 py-1 rounded bg-blue-900/30 text-blue-400 hover:bg-blue-900/50"
                       >
                         Reset Password

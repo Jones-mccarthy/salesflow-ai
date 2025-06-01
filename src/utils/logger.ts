@@ -6,26 +6,26 @@ const isDev = import.meta.env.DEV;
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 const logger = {
-  debug: (message: string, ...args: any[]) => {
+  debug: (message: string, ...args: unknown[]) => {
     if (isDev) {
       console.debug(`[DEBUG] ${message}`, ...args);
     }
   },
   
-  info: (message: string, ...args: any[]) => {
+  info: (message: string, ...args: unknown[]) => {
     console.info(`[INFO] ${message}`, ...args);
   },
   
-  warn: (message: string, ...args: any[]) => {
+  warn: (message: string, ...args: unknown[]) => {
     console.warn(`[WARN] ${message}`, ...args);
   },
   
-  error: (message: string, ...args: any[]) => {
+  error: (message: string, ...args: unknown[]) => {
     console.error(`[ERROR] ${message}`, ...args);
   },
   
   // Log database operations specifically
-  db: (operation: string, details: any) => {
+  db: (operation: string, details: unknown) => {
     if (isDev) {
       console.log(`[DB] ${operation}:`, details);
     }

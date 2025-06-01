@@ -5,11 +5,11 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
-import { useAuth } from '../../context/AuthContext';
+// import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 
 export default function DashboardPage(): React.ReactElement {
-  const { } = useAuth(); // Removed unused businessName
+  // Using useAuth() without destructuring to avoid empty object pattern
   const { products, sales, debts } = useData();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState('');

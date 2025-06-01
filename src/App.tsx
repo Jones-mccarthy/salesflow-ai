@@ -25,7 +25,7 @@ import AppLayout from './components/layout/AppLayout';
 import React from 'react';
 import type { ReactNode } from 'react';
 
-const ProtectedRoute = ({ children, requiredRole = null }: { children: ReactNode; requiredRole?: string | null }) => {
+const ProtectedRoute = ({ children, requiredRole = null }: { children: ReactNode; requiredRole?: "admin" | "staff" | null }) => {
   const { user, role, loading } = useAuth();
   
   if (loading) {
@@ -71,12 +71,12 @@ export default function App(): React.ReactElement {
                     </ProtectedRoute>
                   } />
                   <Route path="/admin/dashboard" element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole={"admin"}>
                       <AdminDashboardPage />
                     </ProtectedRoute>
                   } />
                   <Route path="/staff" element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredRole={"admin"}>
                       <StaffManagementPage />
                     </ProtectedRoute>
                   } />

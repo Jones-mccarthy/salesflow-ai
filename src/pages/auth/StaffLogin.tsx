@@ -21,7 +21,7 @@ export default function StaffLogin(): React.ReactElement {
     try {
       await login(email, password);
       navigate('/sales');
-    } catch (err) {
+    } catch (error) {
       setError('Invalid email or password, or your account may be inactive.');
     } finally {
       setIsLoading(false);

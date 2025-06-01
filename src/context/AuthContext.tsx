@@ -22,8 +22,8 @@ interface AuthContextType {
   signup: (email: string, password: string, role: Role, business_name: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
-  staffMembers: any[];
-  addStaffMember: (staff: any) => void;
+  staffMembers: Array<Record<string, unknown>>;
+  addStaffMember: (staff: Record<string, unknown>) => void;
   updateStaffStatus: (id: string, status: 'active' | 'inactive') => void;
   resetStaffPassword: (id: string, newPassword: string) => void;
 }
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [staffMembers, setStaffMembers] = useState<any[]>([]);
+  const [staffMembers, setStaffMembers] = useState<Array<Record<string, unknown>>>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,7 +101,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
           .eq("id", userId)
           .single();
           
-        data = result.data;
+        if (result.data) {
+          // Convert businessName to business_name for consistency
+          data = { 
+            role: result.data.role,
+            business_name: (result.data as any).businessName 
+          };
+        } else {
+          data = result.data;
+        }
         error = result.error;
         
         if (error) {
@@ -112,12 +120,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
 
       if (data) {
         console.log("User profile data:", data);
-        const businessNameValue = data.business_name || data.businessName || null;
+        // Handle both column name possibilities
+        const businessNameValue = data.business_name || (data as any).businessName || null;
         setUserProfile({
           role: data.role as Role,
-          // Handle both column name possibilities
-          business_name: businessNameValue,
-          businessName: businessNameValue
+          business_name: businessNameValue
         });
       } else {
         console.warn("No user profile found for ID:", userId);
@@ -209,16 +216,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
           setUser(data.user);
           setUserProfile({
             role: role,
-            business_name: business_name,
-            businessName: business_name
+            business_name: business_name
           });
-        } catch (profileErr: any) {
-          logger.error(`Profile creation error: ${profileErr.message}`);
+        } catch (profileErr: unknown) {
+          if (profileErr instanceof Error) {
+            logger.error(`Profile creation error: ${profileErr.message}`);
+          } else {
+            logger.error(`Profile creation error: Unknown error`);
+          }
           throw profileErr;
         }
       }
-    } catch (err: any) {
-      logger.error(`Signup error: ${err.message}`);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        logger.error(`Signup error: ${err.message}`);
+      } else {
+        logger.error(`Signup error: Unknown error`);
+      }
       throw err;
     } finally {
       setLoading(false);
@@ -241,7 +255,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
   };
 
   // Staff management functions
-  const addStaffMember = (staff: any) => {
+  const addStaffMember = (staff: Record<string, unknown>) => {
     const newStaff = {
       id: Date.now().toString(),
       ...staff

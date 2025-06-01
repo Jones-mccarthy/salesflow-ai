@@ -22,12 +22,14 @@ export default function SignupPage() {
     try {
       await signup(email, password, 'admin', businessName);
       navigate('/admin/dashboard');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Signup error:', err);
-      if (err.message?.includes('duplicate key')) {
+      if (err instanceof Error && err.message?.includes('duplicate key')) {
         setError('A user with this email already exists. Please try logging in instead.');
-      } else {
+      } else if (err instanceof Error) {
         setError(err.message || 'Failed to sign up');
+      } else {
+        setError('Failed to sign up');
       }
     } finally {
       setIsLoading(false);
