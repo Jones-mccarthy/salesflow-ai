@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageContainer from '../../components/layout/PageContainer';
 import Card from '../../components/ui/Card';
@@ -8,8 +8,8 @@ import Select from '../../components/ui/Select';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 
-export default function DashboardPage() {
-  const { businessName } = useAuth();
+export default function DashboardPage(): React.ReactElement {
+  const { } = useAuth(); // Removed unused businessName
   const { products, sales, debts } = useData();
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState('');
@@ -34,16 +34,7 @@ export default function DashboardPage() {
   // Identify low stock items
   const lowStockItems = products.filter(product => product.quantity < 10);
   
-  // Identify top selling products
-  const productSales = products.map(product => {
-    const productSales = sales.filter(sale => sale.productId === product.id);
-    const totalQuantity = productSales.reduce((sum, sale) => sum + sale.quantity, 0);
-    return { ...product, totalQuantity };
-  });
-  
-  const topSellingProducts = [...productSales]
-    .sort((a, b) => b.totalQuantity - a.totalQuantity)
-    .slice(0, 5);
+  // Identify product sales data (used in the component)
 
   const { addSale } = useData();
   

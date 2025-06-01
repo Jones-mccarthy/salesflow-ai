@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
@@ -9,15 +9,17 @@ type Role = "admin" | "staff";
 
 interface UserProfile {
   role: Role;
-  businessName: string | null;
+  business_name: string | null;
+  businessName?: string | null; // For backward compatibility
 }
 
 interface AuthContextType {
   user: User | null;
   role: Role | null;
-  businessName: string | null;
+  business_name: string | null;
+  businessName: string | null; // Keep for backward compatibility
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, role: Role, businessName: string) => Promise<void>;
+  signup: (email: string, password: string, role: Role, business_name: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
   staffMembers: any[];
@@ -28,7 +30,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -110,10 +112,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (data) {
         console.log("User profile data:", data);
+        const businessNameValue = data.business_name || data.businessName || null;
         setUserProfile({
           role: data.role as Role,
           // Handle both column name possibilities
-          businessName: data.business_name || data.businessName || null
+          business_name: businessNameValue,
+          businessName: businessNameValue
         });
       } else {
         console.warn("No user profile found for ID:", userId);
@@ -140,7 +144,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signup = async (email: string, password: string, role: Role, businessName: string) => {
+  const signup = async (email: string, password: string, role: Role, business_name: string) => {
     setLoading(true);
     try {
       // Create auth user
@@ -174,7 +178,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 id: data.user.id,
                 email: data.user.email,
                 role: role,
-                business_name: businessName
+                business_name: business_name
               });
             
             if (profileError) {
@@ -186,7 +190,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   .update({
                     email: data.user.email,
                     role: role,
-                    business_name: businessName
+                    business_name: business_name
                   })
                   .eq("id", data.user.id);
                   
@@ -205,7 +209,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(data.user);
           setUserProfile({
             role: role,
-            businessName: businessName
+            business_name: business_name,
+            businessName: business_name
           });
         } catch (profileErr: any) {
           logger.error(`Profile creation error: ${profileErr.message}`);
@@ -260,7 +265,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider value={{ 
       user, 
       role: userProfile?.role || null, 
-      businessName: userProfile?.businessName || null,
+      business_name: userProfile?.business_name || null,
+      businessName: userProfile?.business_name || null, // For backward compatibility
       login, 
       signup, 
       logout, 

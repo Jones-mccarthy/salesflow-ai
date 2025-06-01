@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
 import { useAuth } from '../../context/AuthContext';
 
-export default function AdminLogin() {
+export default function AdminLogin(): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +19,7 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      await login(email, password, 'admin');
+      await login(email, password);
       navigate('/admin/dashboard');
     } catch (err) {
       setError('Invalid email or password');

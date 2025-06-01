@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import React from 'react';
+import type { ReactNode } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
@@ -14,7 +15,7 @@ export default function AppLayout({
   children, 
   requireAuth = true,
   requiredRole = null 
-}: AppLayoutProps) {
+}: AppLayoutProps): React.ReactElement {
   const { user, role, loading } = useAuth();
 
   // Show loading state

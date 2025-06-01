@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
 
-export default function Header() {
-  const { user, businessName, logout } = useAuth();
+export default function Header(): React.ReactElement {
+  const { user, business_name, logout } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [pageTitle, setPageTitle] = useState('');
   const location = useLocation();
@@ -28,7 +28,7 @@ export default function Header() {
           <div>
             <h1 className="text-2xl font-bold text-white/90 tracking-wide flex items-center">
               {pageTitle}
-              {businessName && <span className="ml-3 text-cyan-400">| {businessName}</span>}
+              {business_name && <span className="ml-3 text-cyan-400">| {business_name}</span>}
             </h1>
             <div className="h-1 w-20 bg-gradient-to-r from-indigo-500 to-blue-600 rounded mt-2"></div>
           </div>

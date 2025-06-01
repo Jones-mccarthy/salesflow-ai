@@ -1,14 +1,13 @@
-import { ReactNode } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import React from 'react';
+import type { ReactNode } from 'react';
+
 
 interface PageContainerProps {
   children: ReactNode;
   title?: string;
 }
 
-export default function PageContainer({ children, title }: PageContainerProps) {
-  const { businessName } = useAuth();
-  
+export default function PageContainer({ children }: PageContainerProps): React.ReactElement {
   return (
     <div className="w-full">
       <div className="space-y-6">

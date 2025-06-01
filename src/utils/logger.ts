@@ -2,7 +2,8 @@
 
 const isDev = import.meta.env.DEV;
 
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+// Used for type checking log levels
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 const logger = {
   debug: (message: string, ...args: any[]) => {

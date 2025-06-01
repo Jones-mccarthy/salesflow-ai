@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -11,9 +12,9 @@ const navItems = [
   { name: 'Subscription', path: '/subscription', icon: 'credit-card', roles: ['admin'] },
 ];
 
-export default function Sidebar() {
+export default function Sidebar(): React.ReactElement {
   const location = useLocation();
-  const { user, role, logout } = useAuth();
+  const { role, logout } = useAuth();
   
   // Filter nav items based on user role
   const filteredNavItems = navItems.filter(item => 
@@ -85,7 +86,7 @@ export default function Sidebar() {
   );
 }
 
-function getIcon(name: string) {
+function getIcon(name: string): React.ReactElement {
   switch (name) {
     case 'chart-bar':
       return (

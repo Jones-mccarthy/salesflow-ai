@@ -22,7 +22,10 @@ import { useAuth } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 
 // Protected route component
-const ProtectedRoute = ({ children, requiredRole = null }) => {
+import React from 'react';
+import type { ReactNode } from 'react';
+
+const ProtectedRoute = ({ children, requiredRole = null }: { children: ReactNode; requiredRole?: string | null }) => {
   const { user, role, loading } = useAuth();
   
   if (loading) {
@@ -46,7 +49,7 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
   return <AppLayout>{children}</AppLayout>;
 };
 
-export default function App() {
+export default function App(): React.ReactElement {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-900 text-white">

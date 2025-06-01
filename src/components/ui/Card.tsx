@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import React from 'react';
+import type { ReactNode } from 'react';
 
 interface CardProps {
   children: ReactNode;
@@ -7,7 +8,7 @@ interface CardProps {
   noPadding?: boolean;
 }
 
-export default function Card({ children, className = '', title, noPadding = false }: CardProps) {
+export default function Card({ children, className = '', title, noPadding = false }: CardProps): React.ReactElement {
   return (
     <div className={`glass-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${className}`}>
       {title && (

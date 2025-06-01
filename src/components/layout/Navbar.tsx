@@ -1,12 +1,11 @@
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
 
 interface NavbarProps {
   userRole?: 'admin' | 'staff' | null;
 }
 
-export default function Navbar({ userRole }: NavbarProps) {
+export default function Navbar({ userRole }: NavbarProps): React.ReactElement | null {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   

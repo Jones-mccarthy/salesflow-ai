@@ -1,8 +1,9 @@
+import React from 'react';
 import PageContainer from '../components/layout/PageContainer';
 import Card from '../components/ui/Card';
 import { useData } from '../context/DataContext';
 
-export default function InsightsPage() {
+export default function InsightsPage(): React.ReactElement {
   const { products, sales, debts } = useData();
   
   // Generate insights based on actual data
@@ -39,7 +40,7 @@ export default function InsightsPage() {
       });
       
       // Best selling products
-      const salesByProduct = {};
+      const salesByProduct: Record<string, number> = {};
       sales.forEach(sale => {
         if (!salesByProduct[sale.productId]) {
           salesByProduct[sale.productId] = 0;
@@ -48,7 +49,7 @@ export default function InsightsPage() {
       });
       
       const bestSellingIds = Object.entries(salesByProduct)
-        .sort(([, a], [, b]) => b - a)
+        .sort(([, a], [, b]) => (b as number) - (a as number))
         .slice(0, 2)
         .map(([id]) => id);
         
