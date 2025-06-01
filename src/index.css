@@ -6,28 +6,72 @@
 @layer base {
   body {
     @apply bg-gray-900 text-white min-h-screen;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+  
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.03) 0%, transparent 25%),
+      radial-gradient(circle at 80% 40%, rgba(168, 85, 247, 0.03) 0%, transparent 30%),
+      radial-gradient(circle at 40% 70%, rgba(99, 102, 241, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .tech-background {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tech-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: 
+      radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.1) 0%, transparent 25%),
+      radial-gradient(circle at 85% 25%, rgba(168, 85, 247, 0.15) 0%, transparent 30%),
+      radial-gradient(circle at 75% 75%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 25% 85%, rgba(14, 165, 233, 0.08) 0%, transparent 35%);
+    pointer-events: none;
+    z-index: 0;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-gray-800 bg-opacity-50 backdrop-blur-lg border border-gray-700 rounded-xl shadow-lg;
+    @apply bg-gray-800 bg-opacity-40 backdrop-blur-lg border border-gray-700/50 rounded-xl shadow-lg;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   }
   
   .glass-panel {
-    @apply bg-gray-800 bg-opacity-40 backdrop-blur-md border border-gray-700 rounded-lg;
+    @apply bg-gray-800 bg-opacity-30 backdrop-blur-md border border-gray-700/40 rounded-lg;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   }
   
   .glass-input {
-    @apply bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-gray-600 rounded-md text-white placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500;
+    @apply bg-gray-800 bg-opacity-40 backdrop-blur-sm border border-gray-600/60 rounded-md text-white placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500;
   }
   
   .glass-button {
-    @apply bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors;
+    @apply bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-all;
+    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
   }
   
   .glass-button-secondary {
-    @apply bg-gray-700 bg-opacity-50 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors;
+    @apply bg-gray-700 bg-opacity-50 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
   
   /* Card grid layouts */
@@ -50,11 +94,31 @@
   
   /* Card hover effects */
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:translate-y-[-2px];
+    @apply transition-all duration-300;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.07) inset;
   }
   
   /* Card with accent border */
   .card-accent-left {
     @apply border-l-4;
+    position: relative;
+  }
+  
+  .card-accent-left::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0%, transparent 20%);
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
   }
 }

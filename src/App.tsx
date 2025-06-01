@@ -53,7 +53,8 @@ const ProtectedRoute = ({ children, requiredRole = null }: { children: ReactNode
 export default function App(): React.ReactElement {
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-900 text-white">
+      <div className="tech-background min-h-screen text-white">
+        <div className="tech-glow"></div>
         <Router>
           <ErrorBoundary>
             <AuthProvider>
