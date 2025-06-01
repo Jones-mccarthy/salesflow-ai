@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabase';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -12,8 +13,36 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(5);
   const { signup } = useAuth();
   const navigate = useNavigate();
+
+  // Check if user is already confirmed
+  useEffect(() => {
+    const checkUserConfirmation = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.user?.email_confirmed_at) {
+        setIsConfirmed(true);
+        
+        // Start countdown for auto-redirect
+        const timer = setInterval(() => {
+          setRedirectCountdown(prev => {
+            if (prev <= 1) {
+              clearInterval(timer);
+              navigate('/admin/dashboard');
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        
+        return () => clearInterval(timer);
+      }
+    };
+    
+    checkUserConfirmation();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +72,39 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
+
+  if (isConfirmed) {
+    return (
+      <div className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <Card className="max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="flex justify-center mb-4">
+              <div className="h-16 w-16 bg-green-900/30 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-white">Email Confirmed!</h1>
+            <p className="mt-2 text-slate-400">Your email has been successfully verified.</p>
+          </div>
+
+          <div className="mb-6 p-4 bg-green-900/30 border border-green-500/50 text-green-400 rounded text-center">
+            Your email is confirmed. You will be redirected to the dashboard in {redirectCountdown} seconds.
+          </div>
+
+          <div className="mt-6">
+            <Button 
+              className="w-full"
+              onClick={() => navigate('/admin/dashboard')}
+            >
+              Go to Dashboard Now
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">

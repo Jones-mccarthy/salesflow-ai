@@ -12,10 +12,14 @@ const navItems = [
   { name: 'Subscription', path: '/subscription', icon: 'credit-card', roles: ['admin'] },
 ];
 
-export default function Sidebar(): React.ReactElement {
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export default function Sidebar({ isOpen, setIsOpen }: SidebarProps): React.ReactElement {
   const location = useLocation();
   const { role, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
   
   // Filter nav items based on user role
   const filteredNavItems = navItems.filter(item => 
@@ -24,17 +28,6 @@ export default function Sidebar(): React.ReactElement {
 
   return (
     <>
-      {/* Mobile menu button */}
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-gray-800/80 text-white"
-        aria-label="Toggle menu"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      
       {/* Overlay for mobile */}
       {isOpen && (
         <div 

@@ -62,62 +62,66 @@ export default function DashboardPage(): React.ReactElement {
   return (
     <PageContainer>
       {/* Summary Cards */}
-      <div className="card-grid-4 mb-6">
-        <Card className="card-accent-left border-cyan-500 card-hover">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white mr-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
+      <div className="mb-6">
+        <div className="summary-cards-grid mb-4">
+          <Card className="card-accent-left border-cyan-500 card-hover">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-white mr-4">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-400">Today's Sales</p>
+                <p className="text-lg font-semibold text-white">{todaySalesTotal.toFixed(2)} GHS</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-400">Today's Sales</p>
-              <p className="text-lg font-semibold text-white">{todaySalesTotal.toFixed(2)} GHS</p>
+          </Card>
+          
+          <Card className="card-accent-left border-green-500 card-hover">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white mr-4">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-400">Stock Balance</p>
+                <p className="text-lg font-semibold text-white">{stockBalance.toFixed(2)} GHS</p>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
         
-        <Card className="card-accent-left border-green-500 card-hover">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white mr-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-              </svg>
+        <div className="summary-cards-grid">
+          <Card className="card-accent-left border-purple-500 card-hover">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white mr-4">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-400">Profit Margin</p>
+                <p className="text-lg font-semibold text-white">{profitMargin.toFixed(1)}%</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-400">Stock Balance</p>
-              <p className="text-lg font-semibold text-white">{stockBalance.toFixed(2)} GHS</p>
+          </Card>
+          
+          <Card className="card-accent-left border-yellow-500 card-hover">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 text-white mr-4">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-400">Net Debt</p>
+                <p className="text-lg font-semibold text-white">{(totalOwing - totalOwed).toFixed(2)} GHS</p>
+              </div>
             </div>
-          </div>
-        </Card>
-        
-        <Card className="card-accent-left border-purple-500 card-hover">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white mr-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-400">Profit Margin</p>
-              <p className="text-lg font-semibold text-white">{profitMargin.toFixed(1)}%</p>
-            </div>
-          </div>
-        </Card>
-        
-        <Card className="card-accent-left border-yellow-500 card-hover">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 text-white mr-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-400">Net Debt</p>
-              <p className="text-lg font-semibold text-white">{(totalOwing - totalOwed).toFixed(2)} GHS</p>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
       
       {/* Today's Sales and Quick Sale Form */}

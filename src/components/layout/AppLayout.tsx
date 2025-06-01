@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -17,6 +17,11 @@ export default function AppLayout({
   requiredRole = null 
 }: AppLayoutProps): React.ReactElement {
   const { user, role, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   // Show loading state
   if (loading) {
@@ -42,9 +47,9 @@ export default function AppLayout({
   // If no auth required or user is authenticated with correct role
   return (
     <div className="min-h-screen bg-gray-900 text-white flex">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col">
-        <Header />
+        <Header toggleSidebar={toggleSidebar} />
         <main className="flex-1 p-4 md:p-6 pt-2 overflow-y-auto">
           <div className="max-w-7xl mx-auto">
             {children}

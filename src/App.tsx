@@ -18,6 +18,7 @@ import DashboardPage from './pages/DashboardPage';
 import AdminLogin from './pages/auth/AdminLogin';
 import StaffLogin from './pages/auth/StaffLogin';
 import SignupPage from './pages/auth/SignupPage';
+import EmailConfirmedPage from './pages/auth/EmailConfirmedPage';
 import { useAuth } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 
@@ -63,6 +64,7 @@ export default function App(): React.ReactElement {
                   <Route path="/login/admin" element={<AdminLogin />} />
                   <Route path="/login/staff" element={<StaffLogin />} />
                   <Route path="/signup" element={<SignupPage />} />
+                  <Route path="/confirmed" element={<EmailConfirmedPage />} />
                   
                   {/* Protected routes */}
                   <Route path="/dashboard" element={
