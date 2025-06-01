@@ -53,7 +53,7 @@ export const supabase = createClient<Database>(
 );
 
 // Helper function to manually confirm a user's email (no longer needed as we're auto-confirming)
-export const confirmUserEmail = async (email: string): Promise<boolean> => {
+export const confirmUserEmail = async (_email: string): Promise<boolean> => {
   // Email confirmation is now disabled, so we just return true
   return true;
 };
