@@ -12,6 +12,7 @@ import DebtsPage from './pages/DebtsPage';
 import InsightsPage from './pages/InsightsPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import AppLayout from './components/layout/AppLayout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
 import './App.css';
 
 function App() {
@@ -26,41 +27,53 @@ function App() {
           <Route path="/login/staff" element={<StaffLogin />} />
           <Route path="/confirmed" element={<EmailConfirmedPage />} />
           
-          {/* Protected routes - authentication is disabled, so these are accessible to everyone */}
+          {/* Protected routes */}
           <Route path="/admin/dashboard" element={
-            <AppLayout>
-              <DashboardPage />
-            </AppLayout>
+            <ProtectedRoute requiredRole="admin">
+              <AppLayout>
+                <DashboardPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           <Route path="/inventory" element={
-            <AppLayout>
-              <InventoryPage />
-            </AppLayout>
+            <ProtectedRoute>
+              <AppLayout>
+                <InventoryPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           <Route path="/sales" element={
-            <AppLayout>
-              <SalesPage />
-            </AppLayout>
+            <ProtectedRoute>
+              <AppLayout>
+                <SalesPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           <Route path="/debts" element={
-            <AppLayout>
-              <DebtsPage />
-            </AppLayout>
+            <ProtectedRoute>
+              <AppLayout>
+                <DebtsPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           <Route path="/insights" element={
-            <AppLayout>
-              <InsightsPage />
-            </AppLayout>
+            <ProtectedRoute>
+              <AppLayout>
+                <InsightsPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           <Route path="/subscription" element={
-            <AppLayout>
-              <SubscriptionPage />
-            </AppLayout>
+            <ProtectedRoute>
+              <AppLayout>
+                <SubscriptionPage />
+              </AppLayout>
+            </ProtectedRoute>
           } />
           
           {/* Fallback route */}
