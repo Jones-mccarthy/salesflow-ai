@@ -190,8 +190,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
       if (data.user) {
         logger.info(`User created with ID: ${data.user.id}`);
         
-        // Auto-confirm the user (the trigger will handle creating the public.users record)
+        // Manually create user profile in public.users table
         try {
+          // Insert user record into public.users table
+          const { error: insertError } = await supabase
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: email,
+              role: role,
+              business_name: business_name
+            });
+          
+          if (insertError) {
+            logger.error(`Error inserting user record: ${insertError.message}`);
+            // If insert fails due to duplicate key, try update instead
+            if (insertError.message.includes('duplicate key')) {
+              const { error: updateError } = await supabase
+                .from('users')
+                .update({
+                  email: email,
+                  role: role,
+                  business_name: business_name
+                })
+                .eq('id', data.user.id);
+                
+              if (updateError) {
+                logger.error(`Update error: ${updateError.message}`);
+                throw updateError;
+              }
+            } else {
+              throw insertError;
+            }
+          }
+          
           // Sign in the user immediately
           const { error: signInError } = await supabase.auth.signInWithPassword({
             email,
@@ -215,13 +247,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
             emailConfirmationRequired: false,
             user: data.user
           };
-        } catch (signInErr: unknown) {
-          if (signInErr instanceof Error) {
-            logger.error(`Auto sign-in error: ${signInErr.message}`);
+        } catch (profileErr: unknown) {
+          if (profileErr instanceof Error) {
+            logger.error(`Profile creation error: ${profileErr.message}`);
           } else {
-            logger.error(`Auto sign-in error: Unknown error`);
+            logger.error(`Profile creation error: Unknown error`);
           }
-          throw signInErr;
+          throw profileErr;
         }
       }
     } catch (err: unknown) {
