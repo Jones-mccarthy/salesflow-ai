@@ -12,7 +12,6 @@ import DebtsPage from './pages/DebtsPage';
 import InsightsPage from './pages/InsightsPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import AppLayout from './components/layout/AppLayout';
-import ProtectedRoute from './components/layout/ProtectedRoute';
 import './App.css';
 
 function App() {

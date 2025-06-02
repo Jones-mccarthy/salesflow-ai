@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
 
   // No need for fetchUserProfile anymore
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, _password: string) => {
     setLoading(true);
     try {
       logger.info(`Mock login for user: ${email}`);
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
     }
   };
 
-  const signup = async (email: string, password: string, role: Role, business_name: string) => {
+  const signup = async (email: string, _password: string, role: Role, business_name: string) => {
     setLoading(true);
     try {
       // Skip actual authentication for now
