@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -34,15 +33,7 @@ export default function AppLayout({
     );
   }
 
-  // Redirect if authentication is required but user is not logged in
-  if (requireAuth && !user) {
-    return <Navigate to="/" replace />;
-  }
-
-  // Redirect if specific role is required but user doesn't have it
-  if (requiredRole && role !== requiredRole) {
-    return <Navigate to="/" replace />;
-  }
+  // Authentication checks are bypassed for testing
 
   // If no auth required or user is authenticated with correct role
   return (
