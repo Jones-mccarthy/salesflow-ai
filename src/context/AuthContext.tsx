@@ -1,9 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
-import type { User } from "@supabase/supabase-js";
+import React, { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCallback } from "react";
 import logger from "../utils/logger";
+
+// Mock User type to replace the Supabase User type
+interface User {
+  id: string;
+  email: string;
+}
 
 type Role = "admin" | "staff";
 
@@ -33,125 +36,33 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Set to false initially
   const [staffMembers, setStaffMembers] = useState<Array<Record<string, unknown>>>([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error fetching session:", error.message);
-          return;
-        }
-        
-        if (data.session) {
-          setUser(data.session.user);
-          await fetchUserProfile(data.session.user.id);
-        }
-      } catch (err) {
-        console.error("Failed to get session:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // No session fetching or auth state change listeners needed
 
-    fetchSession();
-
-    try {
-      const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log("Auth state changed:", event);
-        if (session?.user) {
-          setUser(session.user);
-          await fetchUserProfile(session.user.id);
-        } else {
-          setUser(null);
-          setUserProfile(null);
-        }
-      });
-
-      return () => {
-        listener?.subscription.unsubscribe();
-      };
-    } catch (err) {
-      console.error("Error setting up auth listener:", err);
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchUserProfile = useCallback(async (userId: string) => {
-    try {
-      console.log("Fetching user profile for:", userId);
-      
-      // First try with business_name column
-      let { data, error } = await supabase
-        .from("users")
-        .select("role, business_name")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        console.error("Failed to fetch user profile with business_name:", error.message);
-        
-        // Try with businessName column as fallback
-        const result = await supabase
-          .from("users")
-          .select("role, businessName")
-          .eq("id", userId)
-          .single();
-          
-        if (result.data) {
-          // Convert businessName to business_name for consistency
-          data = { 
-            role: result.data.role,
-            business_name: (result.data as any).businessName 
-          };
-        } else {
-          data = result.data;
-        }
-        error = result.error;
-        
-        if (error) {
-          console.error("Failed to fetch user profile with businessName:", error.message);
-          return;
-        }
-      }
-
-      if (data) {
-        console.log("User profile data:", data);
-        // Handle both column name possibilities
-        const businessNameValue = data.business_name || (data as any).businessName || null;
-        setUserProfile({
-          role: data.role as Role,
-          business_name: businessNameValue
-        });
-      } else {
-        console.warn("No user profile found for ID:", userId);
-      }
-    } catch (err) {
-      console.error("Exception in fetchUserProfile:", err);
-    }
-  }, []);
+  // No need for fetchUserProfile anymore
 
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      logger.info(`Attempting login for user: ${email}`);
-      const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+      logger.info(`Mock login for user: ${email}`);
       
-      if (error) {
-        logger.error(`Login error: ${error.message}`);
-        throw error;
-      }
+      // Create a mock user
+      const mockUser = {
+        id: `mock-${Date.now()}`,
+        email: email
+      };
       
-      if (data.user) {
-        logger.info(`User logged in successfully: ${data.user.id}`);
-        setUser(data.user);
-        await fetchUserProfile(data.user.id);
-      } else {
-        logger.warn('Login successful but no user data returned');
-      }
+      // Set user state
+      setUser(mockUser as any);
+      setUserProfile({
+        role: 'admin',
+        business_name: 'Mock Business'
+      });
+      
+      logger.info(`Mock user logged in successfully`);
     } catch (err) {
       if (err instanceof Error) {
         logger.error(`Login error: ${err.message}`);
@@ -167,63 +78,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
   const signup = async (email: string, password: string, role: Role, business_name: string) => {
     setLoading(true);
     try {
-      // Create auth user
-      logger.info(`Creating new auth user with email ${email}`);
-      const { error, data } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          // Skip email confirmation
-          emailRedirectTo: `${window.location.origin}/confirmed`,
-          data: {
-            role: role,
-            business_name: business_name
-          }
-        }
+      // Skip actual authentication for now
+      logger.info(`Creating mock user with email ${email}`);
+      
+      // Create a mock user
+      const mockUser = {
+        id: `mock-${Date.now()}`,
+        email: email,
+        role: role,
+        business_name: business_name
+      };
+      
+      // Set user state
+      setUser(mockUser as any);
+      setUserProfile({
+        role: role,
+        business_name: business_name
       });
       
-      if (error) {
-        logger.error(`Auth signup error: ${error.message}`);
-        throw error;
-      }
+      logger.info(`Mock user created successfully`);
       
-      if (data.user) {
-        logger.info(`User created with ID: ${data.user.id}`);
-        
-        // Auto-confirm the user (the trigger will handle creating the public.users record)
-        try {
-          // Sign in the user immediately
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email,
-            password
-          });
-          
-          if (signInError) {
-            logger.error(`Auto sign-in error: ${signInError.message}`);
-            throw signInError;
-          }
-          
-          logger.info(`User signed in successfully`);
-          setUser(data.user);
-          setUserProfile({
-            role: role,
-            business_name: business_name
-          });
-          
-          // Return result (email confirmation not required)
-          return { 
-            emailConfirmationRequired: false,
-            user: data.user
-          };
-        } catch (signInErr: unknown) {
-          if (signInErr instanceof Error) {
-            logger.error(`Auto sign-in error: ${signInErr.message}`);
-          } else {
-            logger.error(`Auto sign-in error: Unknown error`);
-          }
-          throw signInErr;
-        }
-      }
+      // Return success
+      return { 
+        emailConfirmationRequired: false,
+        user: mockUser as any
+      };
     } catch (err: unknown) {
       if (err instanceof Error) {
         logger.error(`Signup error: ${err.message}`);
@@ -237,18 +116,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }): React
   };
 
   const logout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error during logout:", error);
-        throw error;
-      }
-      setUser(null);
-      setUserProfile(null);
-      navigate("/");
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
+    // Simply clear the user state
+    setUser(null);
+    setUserProfile(null);
+    navigate("/");
   };
 
   // Staff management functions

@@ -15,14 +15,15 @@ export default function AdminLogin(): React.ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setIsLoading(true);
-
+    
+    // Skip validation and just log in
     try {
       await login(email, password);
       navigate('/admin/dashboard');
     } catch (error) {
-      setError('Invalid email or password');
+      // This should never happen with mock login
+      setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
