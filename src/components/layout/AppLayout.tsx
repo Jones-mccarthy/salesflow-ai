@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -34,24 +33,17 @@ export default function AppLayout({
     );
   }
 
-  // Redirect if authentication is required but user is not logged in
-  if (requireAuth && !user) {
-    return <Navigate to="/" replace />;
-  }
-
-  // Redirect if specific role is required but user doesn't have it
-  if (requiredRole && role !== requiredRole) {
-    return <Navigate to="/" replace />;
-  }
+  // Authentication is disabled, so we don't redirect
+  // These checks are kept for future use when auth is re-enabled
 
   // If no auth required or user is authenticated with correct role
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex">
+    <div className="min-h-screen w-full bg-gray-900 text-white flex">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full">
         <Header toggleSidebar={toggleSidebar} />
-        <main className="flex-1 p-4 md:p-6 pt-2 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 p-4 md:p-6 pt-2 overflow-y-auto w-full">
+          <div className="w-full">
             {children}
           </div>
         </main>

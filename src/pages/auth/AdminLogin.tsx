@@ -30,11 +30,11 @@ export default function AdminLogin(): React.ReactElement {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
-      <Card className="max-w-md w-full">
+    <div className="h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <Card className="max-w-md w-full glass-card">
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-white">Admin Login</h1>
-          <p className="mt-2 text-slate-400">Sign in to access your dashboard</p>
+          <p className="mt-2 text-cyan-400">Sign in to access your dashboard</p>
         </div>
 
         {error && (
